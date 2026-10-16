@@ -1,5 +1,6 @@
 #itertools
 
+from functools import wraps
 from itertools import count
 
 c = count(100,5)
@@ -92,11 +93,12 @@ numbers = [10, 20, 30, 40]
 for i in accumulate(numbers):
     print(i)
 
-
+from functools import wraps 
 #decorator
 
 import time
 def timer(func):
+    @wraps(func)
     def wrapper(*args, **kwargs):
         print("Starting...")
         start_time = time.time()
@@ -114,15 +116,69 @@ def slow_function():
 slow_function()
 
 def logger(func):
-    def wrapper(username):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
         print("Calling login")
         print("Arguments:")
-        print(username)
-        return func(username)
+        print(args)
+        print(kwargs)
+        return func(*args, **kwargs)
     return wrapper
 
 @logger
 def login(username):
     print(f"User {username} logged in.")    
 
-login("Alice")
+logged_in = True
+
+def authenticator(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        if logged_in:
+            return func(*args, **kwargs)
+        else:
+            print("Access denied.")
+    return wrapper
+
+@authenticator
+def view_profile(username):
+    print(f"Viewing profile of {username}")
+
+def uppercase(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        result = func(*args, **kwargs)
+        return result.upper()
+    return wrapper
+
+@uppercase
+def greet(name):
+    return f"Hello, {name}!"
+
+def repeat(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        for iteration in range(3):
+            func(*args, **kwargs)
+    return wrapper
+
+@repeat
+def say_hello():
+    print("Hello!")
+
+
+def run_once(func):
+    has_run = False
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        nonlocal has_run
+        if not has_run:
+            has_run = True
+            return func(*args, **kwargs)
+        else:
+            print("Function has already run.")
+    return wrapper
+
+@run_once
+def initialize():
+    print("Initializing...")
