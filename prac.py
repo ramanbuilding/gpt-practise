@@ -182,3 +182,146 @@ def run_once(func):
 @run_once
 def initialize():
     print("Initializing...")
+
+
+#context manager
+
+class Timer:
+    def __enter__(self):
+        self.start_time = time.time()
+        print("Started")
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        self.elapsed = time.time() - self.start_time
+        print(f"Finished in {self.elapsed:.2f} seconds")
+
+
+with Timer():
+    time.sleep(2)
+    
+from contextlib import contextmanager
+
+@contextmanager
+def Database():
+    print("Connecting")
+    try:
+        yield
+    finally:
+        print("Disconnecting")
+
+with Database() as db:
+    print("Performing database operations")
+
+class logger:
+    def __enter__(self):
+        self.log_file = open("log.txt", "a")
+        self.log_file.write("Started\n")
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        self.log_file.write("Finished\n")
+        self.log_file.close()
+
+with logger() as log:
+    print("Logging operations")
+
+
+@contextmanager
+def Timer():
+    start_time = time.time()
+    print("Started")
+    yield
+    end_time = time.time()
+    elapsed_time = end_time - start_time
+    print(f"Finished in {elapsed_time} seconds")
+
+with Timer():
+    time.sleep(2)
+
+#type hints
+
+def multiply(a:int, b:int) -> int:
+    return a*b 
+
+class calculator:
+    def add(self, a:int, b:int) -> int:
+        return a+b
+    def divide(self, a:int, b:int) -> float:
+        return a/b
+
+from dataclasses import dataclass
+
+@dataclass
+class Student:
+    name: str
+    age: int
+    course: str
+
+stu1= Student("Alice", 20, "Math")
+print(stu1)
+
+from typing import TypedDict
+
+class Employee(TypedDict):
+    id: int
+    name: str
+    salary: int
+
+def pay(employee: Employee) -> str:
+    print(f"Paying {employee['name']} : id {employee['id']} with salary {employee['salary']}")
+
+def calculate_total(price: float, quantity:int, discount: float) -> float:
+    return price * quantity * (1 - discount)
+
+def highest_score(scores: list[int]) -> int:
+    return max(scores)
+
+def get_email(user: dict[str, str]) -> str:
+    return user["email"]
+
+def search_username(users: list[dict[str, str]], username: str) -> dict[str, str] | None:
+    for user in users:
+        if user["username"] == username:
+            return user
+    return None
+
+from typing import TypeVar
+T = TypeVar('T')
+def double(value: T) -> T:
+    return value * 2
+
+from dataclasses import dataclass
+
+@dataclass
+class student:
+    name: str
+    age: int
+    course: str
+    cgpa: float
+
+stu1 = student("Alice", 20, "Math", 3.8)
+print(stu1.name)
+
+stu2 = student("Bob", 22, "Physics", 3.5)
+print(stu2.cgpa)
+
+from typing import TypedDict
+class movie(TypedDict):
+    title: str
+    year: int
+    rating: float
+
+def print_movie(m: movie) -> None:
+    print(f"{m['title']} ({m['year']}) - Rating: {m['rating']}")
+
+from typing import Literal
+def chat_mode(mode: Literal["text", "voice"]) -> None:
+    if mode == "text":
+        print("Text mode activated.")
+    elif mode == "voice":
+        print("Voice mode activated.")
+
+def logger(value: any)  -> None:
+    print(f"Logging value: {value}")
+
