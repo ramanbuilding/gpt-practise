@@ -325,3 +325,27 @@ def chat_mode(mode: Literal["text", "voice"]) -> None:
 def logger(value: any)  -> None:
     print(f"Logging value: {value}")
 
+#Async Await 
+
+import asyncio
+async def timer():
+    print("Timer started")
+    await asyncio.sleep(2)
+    print("Timer finished")
+
+async def download_image():
+    print("downloading image...")
+    await asyncio.sleep(2)
+    print("Image downloaded")
+
+async def download_audio():
+    print("downloading audio...")
+    await asyncio.sleep(3)
+    print("Audio downloaded")   
+
+async def main():
+    await asyncio.gather(
+        download_image(),
+        download_audio()
+    )
+
